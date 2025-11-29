@@ -1,3 +1,5 @@
+/calculator/main.py
+/calculator/requirements.txt   (❌ 동작 안 됨)
 streamlit
 numpy
 plotly
