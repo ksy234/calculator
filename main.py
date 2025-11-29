@@ -4,12 +4,10 @@ import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
 
-
 # -----------------------------------
 # 앱 제목
 # -----------------------------------
-st.title("📐 멀티 기능 웹앱 (계산기 + 그래프 + 확률 시뮬레이터)")
-
+st.title("📐 멀티 기능 웹앱")
 
 # -----------------------------------
 # 사이드바 메뉴
@@ -19,14 +17,14 @@ menu = st.sidebar.selectbox(
     ["계산기", "다항함수 그래프", "확률 시뮬레이터"]
 )
 
-
 # ============================================================
-# 1) 계산기
+# 1) 계산기 기능
 # ============================================================
 if menu == "계산기":
+
     st.header("🧮 계산기")
 
-    # 숫자 입력
+    # 숫자 입력 (고유 key 필요)
     num1 = st.number_input("첫 번째 숫자:", value=0.0, format="%.10f", key="calc_num1")
     num2 = st.number_input("두 번째 숫자:", value=0.0, format="%.10f", key="calc_num2")
 
@@ -34,34 +32,29 @@ if menu == "계산기":
     operation = st.selectbox(
         "연산 선택:",
         ["덧셈 (+)", "뺄셈 (-)", "곱셈 (×)", "나눗셈 (÷)",
-         "모듈러 (%)", "지수연산 (x^y)", "로그 (log_x y)"],
+        "모듈러 (%)", "지수연산 (x^y)", "로그 (log_x y)"],
         key="calc_operation"
     )
 
+    # 계산하기
     if st.button("계산하기", key="calc_button"):
         try:
             if operation == "덧셈 (+)":
                 result = num1 + num2
-
             elif operation == "뺄셈 (-)":
                 result = num1 - num2
-
             elif operation == "곱셈 (×)":
                 result = num1 * num2
-
             elif operation == "나눗셈 (÷)":
                 if num2 == 0:
                     raise ZeroDivisionError("0으로 나눌 수 없습니다.")
                 result = num1 / num2
-
             elif operation == "모듈러 (%)":
                 if num2 == 0:
                     raise ZeroDivisionError("0으로 모듈러 연산 불가.")
                 result = num1 % num2
-
             elif operation == "지수연산 (x^y)":
                 result = num1 ** num2
-
             elif operation == "로그 (log_x y)":
                 if num1 <= 0 or num1 == 1:
                     raise ValueError("로그의 밑은 0보다 크고 1이 아니어야 합니다.")
@@ -76,19 +69,19 @@ if menu == "계산기":
 
 
 # ============================================================
-# 2) 다항함수 그래프
+# 2) 다항함수 그래프 기능
 # ============================================================
 elif menu == "다항함수 그래프":
 
-    st.header("📈 다항함수 그래프 그리기 (Plotly)")
+    st.header("📈 다항함수 그래프 그리기")
 
     poly_input = st.text_input(
-        "다항식 입력 (예: 3x^2 - 2x + 1)",
+        "다항식 입력 (例: 3x^2 - 2x + 1)",
         "x^2 - 2x + 1",
         key="poly_input"
     )
-    x_min = st.number_input("x 최소값", value=-10.0, key="poly_xmin")
-    x_max = st.number_input("x 최대값", value=10.0, key="poly_xmax")
+    x_min = st.number_input("x 최소값", value=-10, key="poly_xmin")
+    x_max = st.number_input("x 최대값", value=10, key="poly_xmax")
 
     if st.button("그래프 그리기", key="poly_button"):
         try:
@@ -123,28 +116,23 @@ elif menu == "확률 시뮬레이터":
     if st.button("시뮬레이션 실행", key="sim_button"):
         if sim_type == "동전":
             outcomes = np.random.choice(["앞면", "뒷면"], size=trials)
-        else:  # 주사위
+        else:
             outcomes = np.random.randint(1, 7, size=trials)
 
-        # 결과 집계
         unique, counts = np.unique(outcomes, return_counts=True)
         result = dict(zip(unique, counts))
 
-        st.write("### 📊 결과:", result)
+        st.write("### 결과:", result)
 
-        # Plotly 시각화
         fig = px.bar(
             x=list(result.keys()),
             y=list(result.values()),
             labels={"x": "결과", "y": "빈도"},
-            title=f"{sim_type} 시뮬레이션 결과 ({trials}회)",
-            template="plotly_white"
+            title=f"{sim_type} 시뮬레이션 결과 ({trials}회)"
         )
+        fig.update_layout(template="plotly_white")
 
         st.plotly_chart(fig)
 
-
-# -----------------------------------
-# 하단 정보
-# -----------------------------------
+# Footer
 st.caption("Made with Streamlit · Plotly")
